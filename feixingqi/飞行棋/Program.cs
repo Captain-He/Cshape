@@ -11,13 +11,14 @@ namespace 飞行棋
         static int[] Maps = new int[100];//设置静态字段模拟全局变量,
         static int[] PlayerPos = new int[2];
         static string[] PlayerName = new string[2];
+        static bool[] Flages = new bool[2];
         static void Main(string[] args)
         {
             GameShow();
             #region 输入玩家姓名 
             Console.WriteLine("请输入玩家A的姓名");
             PlayerName[0] = Console.ReadLine();
-            while(PlayerName[0] == "")
+            while (PlayerName[0] == "")
             {
                 Console.WriteLine("玩家A的姓名不能为空，请从新输入");
                 PlayerName[0] = Console.ReadLine();
@@ -41,89 +42,41 @@ namespace 飞行棋
             #endregion
             Console.Clear();
             GameShow();
-            Console.WriteLine("{0}的士兵用A表示",PlayerName[0]);
-            Console.WriteLine("{0}的士兵用B表示",PlayerName[1]);
+            Console.WriteLine("{0}的士兵用A表示", PlayerName[0]);
+            Console.WriteLine("{0}的士兵用B表示", PlayerName[1]);
             InitailaMap();
             DrawMap();
             while (PlayerPos[0] < 99 && PlayerPos[1] < 99)
             {
-                Console.WriteLine("{0}按任意键开始掷骰子", PlayerName[0]);
-                Console.ReadKey(true);
-                Console.WriteLine("{0}掷出了4", PlayerName[0]);
-                PlayerPos[0] += 4;
-                Console.ReadKey(true);
-                Console.WriteLine("{0}按任意键开始行动", PlayerName[0]);
-                Console.ReadKey(true);
-                Console.WriteLine("{0}行动完了", PlayerName[0]);
-                Console.ReadKey(true);
-                if (PlayerPos[0] == PlayerPos[1])
+                if (Flages[0] == false)
                 {
-                    Console.WriteLine("玩家{0}踩到了玩家{1}，玩家{2}退6格", PlayerName[0], PlayerName[1], PlayerName[1]);
-                    Console.ReadKey(true);
-                    PlayerPos[1] -= 6;
-
+                    PlayGame(0);
                 }
                 else
                 {
-                    switch (Maps[PlayerPos[0]])
-                    {
-                        case 0:
-                            Console.WriteLine("玩家{0}踩到了方块，安全。", PlayerName[0]);
-                            Console.ReadKey(true);
-                            break;
-                        case 1:
-                            Console.WriteLine("玩家{0}踩到幸运轮盘，请选择1--交换位置 2--轰炸对方");
-                            string input = Console.ReadLine();
-                            while (true)
-                            {
-                                if (input == "1")
-                                {
-                                    Console.WriteLine("玩家{0}选择和玩家{1}交换位置", PlayerName[0], PlayerName[1]);
-                                    Console.ReadKey(true);
-                                    int temp = PlayerPos[0];
-                                    PlayerPos[0] = PlayerPos[1];
-                                    PlayerPos[1] = temp;
-                                    Console.WriteLine("交换完成！！！按任意键继续游戏！！！");
-                                    Console.ReadKey(true);
-                                    break;
-                                }
-                                else if (input == "2")
-                                {
-                                    Console.WriteLine("玩家{0}选择轰炸玩家{1}，玩家{2}退6格", PlayerName[0], PlayerName[1], PlayerName[1]);
-                                    Console.ReadKey(true);
-                                    PlayerPos[1] -= 6;
-                                    Console.WriteLine("玩家{0}退6格", PlayerName[1]);
-                                    Console.ReadKey(true);
-                                    break;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("只能输入1或者2 ， 1--交换位置  2--轰炸对方");
-                                    input = Console.ReadLine();
-                                }
-                            }
-                                break;
-
-                                case 2:
-                            Console.WriteLine("玩家{0}踩到地雷退6格", PlayerName[0]);
-                            Console.ReadKey(true);
-                            PlayerPos[0] -= 6;
-                            break;
-                        case 3:
-                            Console.WriteLine("玩家{0}踩到暂停，暂停一回合", PlayerName[0]);
-                            Console.ReadKey(true);
-
-                            break;
-                        case 4:
-                            Console.WriteLine("玩家{0}踩到时空隧道，前进10格", PlayerName[0]);
-                            PlayerPos[0] += 10;
-                            Console.ReadKey(true);
-                            break;
-                    }
+                    Flages[0] = false;
                 }
-                Console.Clear();
-                DrawMap();
+                if (PlayerPos[0] >= 99)
+                {
+                    Console.WriteLine("玩家{0}无耻地赢了玩家{1}",PlayerName[0],PlayerName[1]);
+                    break;
+                }
+
+                if (Flages[1] == false)
+                {
+                    PlayGame(1);
+                }
+                else
+                {
+                    Flages[1] = false;
+                }
+                if (PlayerPos[1] >= 99)
+                {
+                    Console.WriteLine("玩家{0}无耻地赢了玩家{1}", PlayerName[1], PlayerName[0]);
+                    break;
+                }
             }
+
             Console.ReadKey();
         }
 
@@ -187,7 +140,7 @@ namespace 飞行棋
             {
                 Console.Write(DrawStringMap(i));
             }
-          
+
             Console.WriteLine();
             #endregion
 
@@ -198,13 +151,13 @@ namespace 飞行棋
                 {
                     Console.Write("  ");
                 }
-              Console.Write(DrawStringMap(i));
+                Console.Write(DrawStringMap(i));
                 Console.WriteLine();
             }
             #endregion
 
             #region 第二行
-            for(int i = 64;i>=35;i--)
+            for (int i = 64; i >= 35; i--)
             {
                 Console.Write(DrawStringMap(i));
             }
@@ -212,17 +165,17 @@ namespace 飞行棋
             #endregion
 
             #region 第二竖
-            for (int i = 65; i<=69; i++)
+            for (int i = 65; i <= 69; i++)
             {
-               
+
                 Console.Write(DrawStringMap(i));
                 Console.WriteLine();
             }
-           
+
             #endregion
 
             #region 第三行
-            for (int i = 70; i <=99; i++)
+            for (int i = 70; i <= 99; i++)
             {
                 Console.Write(DrawStringMap(i));
             }
@@ -231,9 +184,9 @@ namespace 飞行棋
             Console.WriteLine();
         }
 
-        public static string  DrawStringMap(int i )
-        {         
-            string str = "";          
+        public static string DrawStringMap(int i)
+        {
+            string str = "";
             #region 画图
             if (PlayerPos[0] == PlayerPos[1] && PlayerPos[1] == i)
             {
@@ -276,9 +229,123 @@ namespace 飞行棋
             #endregion
             return str;
         }
+
+        /// <summary>
+        /// 玩游戏
+        /// </summary>
+        public static void PlayGame(int playerNumber)
+        {
+            Random r = new Random();
+            int rNumber = r.Next(1,7);
+            Console.WriteLine("{0}按任意键开始掷骰子", PlayerName[playerNumber]);
+            Console.ReadKey(true);
+            Console.WriteLine("{0}掷出了{1}", PlayerName[playerNumber],rNumber);
+            PlayerPos[playerNumber] += rNumber;
+            ChangePos();
+            Console.ReadKey(true);
+            Console.WriteLine("{0}按任意键开始行动", PlayerName[playerNumber]);
+            Console.ReadKey(true);
+            Console.WriteLine("{0}行动完了", PlayerName[playerNumber]);
+            Console.ReadKey(true);
+            if (PlayerPos[playerNumber] == PlayerPos[1 - playerNumber])
+            {
+                Console.WriteLine("玩家{0}踩到了玩家{1}，玩家{2}退6格", PlayerName[playerNumber], PlayerName[1 - playerNumber], PlayerName[1 - playerNumber]);
+                PlayerPos[1 - playerNumber] -= 6;
+                ChangePos();
+                Console.ReadKey(true);
+
+            }
+            else
+            {
+                switch (Maps[PlayerPos[playerNumber]])
+                {
+                    case 0:
+                        Console.WriteLine("玩家{0}踩到了方块，安全。", PlayerName[playerNumber]);
+                        Console.ReadKey(true);
+                        break;
+                    case 1:
+                        Console.WriteLine("玩家{0}踩到幸运轮盘，请选择1--交换位置 2--轰炸对方");
+                        string input = Console.ReadLine();
+                        while (true)
+                        {
+                            if (input == "1")
+                            {
+                                Console.WriteLine("玩家{0}选择和玩家{1}交换位置", PlayerName[playerNumber], PlayerName[1 - playerNumber]);
+                                Console.ReadKey(true);
+                                int temp = PlayerPos[playerNumber];
+                                PlayerPos[playerNumber] = PlayerPos[1 - playerNumber];
+                                PlayerPos[1 - playerNumber] = temp;
+                                Console.WriteLine("交换完成！！！按任意键继续游戏！！！");
+                                Console.ReadKey(true);
+                                break;
+                            }
+                            else if (input == "2")
+                            {
+                                Console.WriteLine("玩家{0}选择轰炸玩家{1}，玩家{2}退6格", PlayerName[playerNumber], PlayerName[1 - playerNumber], PlayerName[1 - playerNumber]);
+                                Console.ReadKey(true);
+                                PlayerPos[1 - playerNumber] -= 6;
+                                ChangePos();
+                                Console.WriteLine("玩家{0}退6格", PlayerName[1 - playerNumber]);
+                                Console.ReadKey(true);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("只能输入1或者2 ， 1--交换位置  2--轰炸对方");
+                                input = Console.ReadLine();
+                            }
+                        }
+                        break;
+
+                    case 2:
+                        Console.WriteLine("玩家{0}踩到地雷退6格", PlayerName[playerNumber]);
+                        Console.ReadKey(true);
+                        PlayerPos[playerNumber] -= 6;
+                        ChangePos();
+                        break;
+                    case 3:
+                        Console.WriteLine("玩家{0}踩到暂停，暂停一回合", PlayerName[playerNumber]);
+                        Flages[playerNumber] = true;
+                        Console.ReadKey(true);
+
+                        break;
+                    case 4:
+                        Console.WriteLine("玩家{0}踩到时空隧道，前进10格", PlayerName[playerNumber]);
+                        PlayerPos[playerNumber] += 10;
+                        ChangePos();
+                        Console.ReadKey(true);
+                        break;
+                }
+            }
+            ChangePos();
+            Console.Clear();
+            DrawMap();
+        }
+
+        public static void ChangePos()
+        {
+            if(PlayerPos[0] < 0)
+            {
+                PlayerPos[0] = 0;
+            }
+            if (PlayerPos[0] >= 99)
+            {
+                PlayerPos[0] = 99;
+            }
+            if (PlayerPos[1] < 0)
+            {
+                PlayerPos[1] = 0;
+            }
+            if (PlayerPos[1] >= 99)
+            {
+                PlayerPos[1] = 99;
+            }
+        }
+
+
     }
 }
-
+ 
         
 
     
